@@ -1,0 +1,29 @@
+{
+  "name": "postgres-source-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "postgres",
+    "database.dbname": "postgres",
+    "topic.prefix": "cdc",
+    "schema.include.list": "ecommerce",
+    "table.include.list": "ecommerce.orders",
+    "plugin.name": "pgoutput",
+    "publication.autocreate.mode": "filtered",
+    "slot.name": "debezium_orders",
+    "decimal.handling.mode": "double",
+    
+    "transforms": "unwrap,addSource",
+
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.unwrap.add.fields": "op,table,source.ts_ms",
+    "transforms.unwrap.delete.handling.mode": "rewrite",
+    "transforms.unwrap.drop.tombstones": "true",
+
+    "transforms.addSource.type": "org.apache.kafka.connect.transforms.InsertField$Value",
+    "transforms.addSource.static.field": "__message_source",
+    "transforms.addSource.static.value": "Kafka Connect"
+  }
+}

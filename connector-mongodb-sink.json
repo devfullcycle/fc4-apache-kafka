@@ -1,0 +1,40 @@
+{
+  "name": "mongodb-sink-connector",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+
+    "topics": "cdc.ecommerce.orders",
+
+    "connection.uri": "mongodb://root:root@mongodb:27017",
+    "database": "ecommerce",
+    "collection": "orders",
+
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+
+    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.PartialKeyStrategy",
+    "document.id.strategy.partial.key.projection.list": "id",
+    "document.id.strategy.partial.key.projection.type": "AllowList",
+
+    "writemodel.strategy": "com.mongodb.kafka.connect.sink.writemodel.strategy.ReplaceOneDefaultStrategy",
+
+    "delete.on.null.values": "true",
+
+    "transforms": "renameFields,maskEmail,castTypes,dropFields",
+
+    "transforms.renameFields.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.renameFields.renames": "customer_name:customerName,customer_email:customerEmail,product_name:productName,unit_price:unitPrice,created_at:createdAt,updated_at:updatedAt,__deleted:deleted",
+
+    "transforms.maskEmail.type": "org.apache.kafka.connect.transforms.MaskField$Value",
+    "transforms.maskEmail.fields": "customerEmail",
+    "transforms.maskEmail.replacement": "[MASKED]",
+
+    "transforms.castTypes.type": "org.apache.kafka.connect.transforms.Cast$Value",
+    "transforms.castTypes.spec": "quantity:int32,unitPrice:float64",
+
+    "transforms.dropFields.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.dropFields.exclude": "__op,__table,__source_ts_ms,__processed_at"
+  }
+}

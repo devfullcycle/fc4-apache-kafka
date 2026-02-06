@@ -1,0 +1,29 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "Events.Orders",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string"
+    },
+    {
+      "name": "customerId",
+      "type": "string"
+    },
+    {
+      "name": "amount",
+      "type": "double"
+    },
+    {
+      "name": "notes",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "BRL"
+    }
+  ]
+}
